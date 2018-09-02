@@ -1,0 +1,7 @@
+{
+  "name": "TuneSearch",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
