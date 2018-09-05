@@ -6,12 +6,11 @@ import { LoadingController } from '@ionic/angular';
 })
 export class LoadingService {
 
-
   constructor(private loadingController: LoadingController) { }
 
   async startPageLoading() {
     const loading = await this.loadingController.create({
-      content: 'Please Wait...',
+      spinner:  'lines',
     });
     return await loading.present();
   }
