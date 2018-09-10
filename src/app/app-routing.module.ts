@@ -10,9 +10,6 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: './home/home.module#HomePageModule'
-  },
-  { path: 'search',
-    loadChildren: './search/search.module#SearchPageModule'
   }
 ];
 

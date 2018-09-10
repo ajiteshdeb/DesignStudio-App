@@ -1,28 +1,56 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
+    <ion-buttons slot="start" *ngIf="!isSearchbarOpened">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>
-      Home
+    <ion-title *ngIf="!isSearchbarOpened">
+      Design Studio
     </ion-title>
+    <ion-searchbar animated="true" placeholder="Filter Posts" showCancelButton
+     cancelButtonText="Cancel" debounce="800" *ngIf="isSearchbarOpened" 
+     (ionCancel)="onSearchCancel($event)" (ionChange)="getSearchTerm($event)">
+    </ion-searchbar> 
+    <ion-buttons slot="end">
+      <ion-button *ngIf="!isSearchbarOpened" (click)="checkSearchBarOpened()">
+        <ion-icon slot="icon-only" name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>      
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content *ngIf="!isSearchbarOpened" padding>
     <ion-card *ngFor="let blogpost of blogposts">
         <ion-img [src]="blogpost._embedded['wp:featuredmedia']['0'].source_url"></ion-img>
       
         <ion-card-content>
-          <ion-card-title [innerHTML]="blogpost.title.rendered"></ion-card-title>
-      
+          <ion-card-title [routerLink]="[blogpost.slug]" [innerHTML]="blogpost.title.rendered"></ion-card-title>
           <p [innerHTML]="blogpost.excerpt.rendered"></p>
         </ion-card-content>
     </ion-card>
+
     <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreBlog($event)">
         <ion-infinite-scroll-content
           loadingSpinner="bubbles"
           loadingText="Loading more posts...">
         </ion-infinite-scroll-content>
     </ion-infinite-scroll>      
+</ion-content>
+
+
+<ion-content *ngIf="isSearchbarOpened" padding>
+  <ion-card *ngFor="let searchResult of searchResults">
+    <ion-img [src]="searchResult._embedded['wp:featuredmedia']['0'].source_url"></ion-img>
+  
+    <ion-card-content>
+      <ion-card-title [routerLink]="[searchResult.slug]" [innerHTML]="searchResult.title.rendered"></ion-card-title>
+      <p [innerHTML]="searchResult.excerpt.rendered"></p>
+    </ion-card-content>
+  </ion-card> 
+
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreBlog($event)">
+      <ion-infinite-scroll-content
+        loadingSpinner="bubbles"
+        loadingText="Loading more posts...">
+      </ion-infinite-scroll-content>
+  </ion-infinite-scroll>      
 </ion-content>

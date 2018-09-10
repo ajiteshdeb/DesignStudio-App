@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { ViewChild } from '@angular/core';
 import { InfiniteScroll } from '@ionic/angular';
+import {
+  distinctUntilChanged,
+  tap,
+  debounceTime
+} from 'rxjs/operators';
 
 import { BlogService } from '../services/blog.service';
 import { LoadingService } from '../services/loading.service';
@@ -17,8 +22,12 @@ export class HomePage implements OnInit {
   @ViewChild(InfiniteScroll) infiniteScroll: InfiniteScroll;
 
   blogposts: BlogPost[] = [];
+  searchResults: BlogPost[] = [];
   private page = 1;
   private per_page = 2;
+  public isSearchbarOpened = false;
+  private search_term;
+  private searches = [];
 
   constructor(
     private blogservice: BlogService,
@@ -53,11 +62,43 @@ export class HomePage implements OnInit {
 
   loadMoreBlog(event) {
     setTimeout(() => {
-      this.getBlog(event);
-      // if (this.page === 1) {
-      //   event.target.disabled = true;
-      // }
+      if (this.isSearchbarOpened === false) {
+        this.getBlog(event);
+      } else {
+        this.showSearchResult(event);
+      }
     }, 500);
   }
 
+  checkSearchBarOpened () {
+    this.isSearchbarOpened = true;
+    this.page = 1;
+  }
+
+  onSearchCancel(ionSearchCancelEvent) {
+    this.isSearchbarOpened = false;
+  }
+
+  getSearchTerm(ionChangeEvent) {
+    this.search_term = ionChangeEvent.target.value;
+    console.log(this.search_term);
+    this.showSearchResult (event);
+  }
+
+  showSearchResult (event?) {
+    this.blogservice.getSearchResult(this.search_term)
+    .subscribe((data) => {
+      this.searchResults = data;
+      // this.page++;
+      // if (event) {
+      //   event.target.complete();
+      // }
+    },
+    (e) => {
+      console.log(e);
+      // if (event) {
+      //   event.target.complete();
+      // }
+    });
+  }
 }

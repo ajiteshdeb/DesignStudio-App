@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
 import { HomePage } from './home.page';
+import { PostDetailComponent } from './post-detail/post-detail.component';
 
 @NgModule({
   imports: [
@@ -15,9 +16,13 @@ import { HomePage } from './home.page';
       {
         path: '',
         component: HomePage
+      },
+      {
+        path: ':slug',
+        component: PostDetailComponent
       }
     ])
   ],
-  declarations: [HomePage]
+  declarations: [HomePage, PostDetailComponent]
 })
 export class HomePageModule {}
