@@ -7,6 +7,7 @@ import {
   tap,
   debounceTime
 } from 'rxjs/operators';
+import {HttpHeaders, HttpClient } from '@angular/common/http';
 
 import { BlogService } from '../services/blog.service';
 import { LoadingService } from '../services/loading.service';
@@ -25,9 +26,10 @@ export class HomePage implements OnInit {
   searchResults: BlogPost[] = [];
   private page = 1;
   private per_page = 2;
+  private totalBlog;
+  public noMoreBlog = false;
   public isSearchbarOpened = false;
   private search_term;
-  private searches = [];
 
   constructor(
     private blogservice: BlogService,
@@ -38,8 +40,14 @@ export class HomePage implements OnInit {
   ngOnInit() {
     this.loadingservice.startPageLoading();
     this.getBlog();
+    this.showTotalBlog();
   }
 
+  showTotalBlog() {
+    this.blogservice.getTotalBlog().subscribe((response) => {
+      this.totalBlog = response.headers.get('x-wp-total');
+    });
+  }
 
   getBlog( event? ) {
     this.blogservice.getAllBlog(this.per_page, this.page).subscribe((data) => {
@@ -63,8 +71,15 @@ export class HomePage implements OnInit {
   loadMoreBlog(event) {
     setTimeout(() => {
       if (this.isSearchbarOpened === false) {
-        this.getBlog(event);
+        if (this.page * this.per_page <= this.totalBlog) {
+          this.getBlog(event);
+        } else {
+          event.target.disabled = true;
+          this.noMoreBlog = true;
+        }
       } else {
+        console.log(this.page);
+        this.page++;
         this.showSearchResult(event);
       }
     }, 500);
@@ -73,6 +88,7 @@ export class HomePage implements OnInit {
   checkSearchBarOpened () {
     this.isSearchbarOpened = true;
     this.page = 1;
+    this.searchResults = [];
   }
 
   onSearchCancel(ionSearchCancelEvent) {
@@ -82,23 +98,25 @@ export class HomePage implements OnInit {
   getSearchTerm(ionChangeEvent) {
     this.search_term = ionChangeEvent.target.value;
     console.log(this.search_term);
-    this.showSearchResult (event);
+    this.showSearchResult ();
   }
 
   showSearchResult (event?) {
-    this.blogservice.getSearchResult(this.search_term)
+    console.log('old' + this.per_page);
+    this.blogservice.getSearchResult(this.search_term, this.per_page, this.page)
     .subscribe((data) => {
-      this.searchResults = data;
-      // this.page++;
-      // if (event) {
-      //   event.target.complete();
-      // }
+      this.searchResults = this.searchResults.concat(data);
+      console.log('new' + this.page);
+      if (event) {
+        event.target.complete();
+        console.log(event);
+      }
     },
     (e) => {
       console.log(e);
-      // if (event) {
-      //   event.target.complete();
-      // }
+      if (event) {
+        event.target.complete();
+      }
     });
   }
 }

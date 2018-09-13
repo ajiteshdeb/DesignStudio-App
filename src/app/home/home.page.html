@@ -33,7 +33,13 @@
           loadingSpinner="bubbles"
           loadingText="Loading more posts...">
         </ion-infinite-scroll-content>
-    </ion-infinite-scroll>      
+    </ion-infinite-scroll> 
+    
+    <ion-item text-center color="primary" *ngIf="noMoreBlog">
+      <ion-label>
+        No more posts to show.
+      </ion-label>
+    </ion-item>
 </ion-content>
 
 

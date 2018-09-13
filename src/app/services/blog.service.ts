@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import {
   distinctUntilChanged,
   tap,
@@ -17,6 +17,10 @@ export class BlogService {
     private http: HttpClient
   ) {}
 
+  getTotalBlog() {
+    return this.http.get<HttpResponse<any>>(`wp/v2/posts/`, {observe: 'response'});
+  }
+
   getAllBlog(per_page: number, page: number) {
     return this.http.get<BlogPost[]>(`wp/v2/posts?_embed&per_page=${per_page}&page=${page}`);
   }
@@ -25,7 +29,7 @@ export class BlogService {
     return this.http.get<BlogPost[]>(`wp/v2/posts?_embed&slug=${slug}`);
   }
 
-  getSearchResult(search_term: string) {
-    return this.http.get<BlogPost[]>(`wp/v2/posts?_embed&search=${search_term}`);
+  getSearchResult(search_term: string, per_page: number, page: number) {
+    return this.http.get<BlogPost[]>(`wp/v2/posts?_embed&search=${search_term}&per_page=${per_page}&page=${page}`);
   }
 }
