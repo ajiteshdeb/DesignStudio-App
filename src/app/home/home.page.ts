@@ -7,7 +7,6 @@ import {
   tap,
   debounceTime
 } from 'rxjs/operators';
-import {HttpHeaders, HttpClient } from '@angular/common/http';
 
 import { BlogService } from '../services/blog.service';
 import { LoadingService } from '../services/loading.service';
@@ -29,6 +28,8 @@ export class HomePage implements OnInit {
   private totalBlog;
   public noMoreBlog = false;
   public isSearchbarOpened = false;
+  public showSpinner = false;
+  public searchTemplateActive = false;
   private search_term;
 
   constructor(
@@ -70,7 +71,7 @@ export class HomePage implements OnInit {
 
   loadMoreBlog(event) {
     setTimeout(() => {
-      if (this.isSearchbarOpened === false) {
+      if (this.searchTemplateActive === false) {
         if (this.page * this.per_page <= this.totalBlog) {
           this.getBlog(event);
         } else {
@@ -78,7 +79,6 @@ export class HomePage implements OnInit {
           this.noMoreBlog = true;
         }
       } else {
-        console.log(this.page);
         this.page++;
         this.showSearchResult(event);
       }
@@ -87,29 +87,29 @@ export class HomePage implements OnInit {
 
   checkSearchBarOpened () {
     this.isSearchbarOpened = true;
-    this.page = 1;
-    this.searchResults = [];
   }
 
   onSearchCancel(ionSearchCancelEvent) {
     this.isSearchbarOpened = false;
+    this.searchTemplateActive = false;
   }
 
   getSearchTerm(ionChangeEvent) {
+    this.page = 1;
+    this.searchResults = [];
+    this.showSpinner = true;
+    this.searchTemplateActive = true;
     this.search_term = ionChangeEvent.target.value;
-    console.log(this.search_term);
     this.showSearchResult ();
   }
 
   showSearchResult (event?) {
-    console.log('old' + this.per_page);
     this.blogservice.getSearchResult(this.search_term, this.per_page, this.page)
     .subscribe((data) => {
       this.searchResults = this.searchResults.concat(data);
-      console.log('new' + this.page);
+      this.showSpinner = false;
       if (event) {
         event.target.complete();
-        console.log(event);
       }
     },
     (e) => {

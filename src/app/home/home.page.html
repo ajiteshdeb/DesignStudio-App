@@ -18,7 +18,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="!isSearchbarOpened" padding>
+<ion-content *ngIf="!searchTemplateActive" padding>
     <ion-card *ngFor="let blogpost of blogposts">
         <ion-img [src]="blogpost._embedded['wp:featuredmedia']['0'].source_url"></ion-img>
       
@@ -43,7 +43,12 @@
 </ion-content>
 
 
-<ion-content *ngIf="isSearchbarOpened" padding>
+<ion-content *ngIf="searchTemplateActive" padding>
+  <div class="showspinner-block" *ngIf="showSpinner">
+    <ion-spinner color="primary" name="bubbles"></ion-spinner>
+    <div class="spinner-text"><p>Searching...</p></div>
+  </div>
+
   <ion-card *ngFor="let searchResult of searchResults">
     <ion-img [src]="searchResult._embedded['wp:featuredmedia']['0'].source_url"></ion-img>
   
