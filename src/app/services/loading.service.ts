@@ -10,7 +10,7 @@ export class LoadingService {
 
   async startPageLoading() {
     const loading = await this.loadingController.create({
-      spinner:  'lines',
+      message: 'Please hold the line...',
     });
     return await loading.present();
   }

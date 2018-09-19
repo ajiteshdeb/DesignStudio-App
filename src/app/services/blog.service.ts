@@ -25,10 +25,6 @@ export class BlogService {
     return this.http.get<BlogPost[]>(`wp/v2/posts?_embed&per_page=${per_page}&page=${page}`);
   }
 
-  getBlogDetail(slug: string) {
-    return this.http.get<BlogPost[]>(`wp/v2/posts?_embed&slug=${slug}`);
-  }
-
   getSearchResult(search_term: string, per_page: number, page: number) {
     return this.http.get<BlogPost[]>(`wp/v2/posts?_embed&search=${search_term}&per_page=${per_page}&page=${page}`);
   }

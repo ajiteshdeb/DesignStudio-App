@@ -11,19 +11,15 @@ import { BlogPost } from '../../interfaces/blog-response.interface';
 })
 export class PostDetailComponent implements OnInit {
 
-  private slug;
   private blogdetail: BlogPost[] = [];
 
   constructor(private route: ActivatedRoute, private blogservice: BlogService) { }
 
   ngOnInit() {
-    this.slug = this.route.snapshot.paramMap.get('slug');
-    this.blogservice.getBlogDetail(this.slug).subscribe((data) => {
-      this.blogdetail = data;
-      console.log(this.blogdetail);
-    },
-    (e) => {
-      console.log(e);
+    this.route.data
+    .subscribe((data: { postDetails: BlogPost[] }) => {
+      this.blogdetail = data.postDetails;
+      console.log(this.route.data);
     });
   }
 

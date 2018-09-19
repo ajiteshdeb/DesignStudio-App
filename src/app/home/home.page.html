@@ -23,7 +23,9 @@
         <ion-img [src]="blogpost._embedded['wp:featuredmedia']['0'].source_url"></ion-img>
       
         <ion-card-content>
-          <ion-card-title [routerLink]="[blogpost.slug]" [innerHTML]="blogpost.title.rendered"></ion-card-title>
+          <a [routerLink]="['single-post',blogpost.slug]">
+          <ion-card-title routerDirection="forward"  [innerHTML]="blogpost.title.rendered"></ion-card-title>
+          </a>
           <p [innerHTML]="blogpost.excerpt.rendered"></p>
         </ion-card-content>
     </ion-card>

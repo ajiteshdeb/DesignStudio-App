@@ -12,6 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppInterceptor } from './app-http.interceptor';
 import { BlogService } from './services/blog.service';
 import { LoadingService } from './services/loading.service';
+import { PostDetailRouteResolverService } from './services/post-detail-route-resolver.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,7 +33,8 @@ import { LoadingService } from './services/loading.service';
       multi: true
     },
     BlogService,
-    LoadingService
+    LoadingService,
+    PostDetailRouteResolverService
   ],
   bootstrap: [AppComponent]
 })
