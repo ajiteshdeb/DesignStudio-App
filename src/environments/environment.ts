@@ -4,7 +4,7 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 export const environment = {
   production: false,
-  origin: 'http://design-studio.io/ETthemes/wp-json'
+  origin: 'http://design-studio.io/wp-json'
 };
 
 /*
