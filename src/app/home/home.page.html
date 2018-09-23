@@ -20,8 +20,10 @@
 
 <ion-content *ngIf="!searchTemplateActive" padding>
     <ion-card *ngFor="let blogpost of blogposts">
-        <ion-img [src]="blogpost._embedded['wp:featuredmedia']['0'].source_url"></ion-img>
-      
+        
+        <ion-img *ngIf="blogpost._embedded['wp:featuredmedia']"  [src]="blogpost._embedded['wp:featuredmedia']['0'].source_url"></ion-img>
+        <ion-img *ngIf="!blogpost._embedded['wp:featuredmedia']"  src="../../assets/default-featured-image.png"></ion-img>
+     
         <ion-card-content>
           <a [routerLink]="['single-post',blogpost.slug]">
           <ion-card-title routerDirection="forward"  [innerHTML]="blogpost.title.rendered"></ion-card-title>

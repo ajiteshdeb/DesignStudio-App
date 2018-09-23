@@ -11,7 +11,8 @@ const routes: Routes = [
     path: 'home',
     loadChildren: './home/home.module#HomePageModule',
     data: { preload: true }
-  }
+  },
+  { path: 'login', loadChildren: './login/login.module#LoginPageModule' }
 ];
 
 @NgModule({

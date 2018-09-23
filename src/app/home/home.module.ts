@@ -23,7 +23,7 @@ import { PostDetailRouteResolverService } from '../services/post-detail-route-re
         path: 'single-post/:slug',
         component: PostDetailComponent,
         data: {
-          title: 'Example of static route data'
+          title: 'single-post/slug'
         },
         resolve: {
           postDetails: PostDetailRouteResolverService
