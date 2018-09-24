@@ -25,7 +25,10 @@ export class AuthService {
   login(credentials) {
     return this.http.post<User>(`jwt-auth/v1/token`, credentials)
     .pipe(
-      tap(user => console.log(user)),
+      tap((wpUser: User) => {
+        this.userSub.next(wpUser);
+        localStorage.setItem('wpUser', JSON.stringify(wpUser));
+      })
     );
   }
 }
