@@ -34,7 +34,7 @@ export class LoginPage implements OnInit {
     this.submitted = true;
     if (valid) {
       this.authService.login(value).subscribe((data) => {
-        console.log(localStorage.getItem('token'));
+        this.router.navigate(['/profile']);
       }, (e) => {
         console.log(e);
         this.errMsg = e.message;

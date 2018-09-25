@@ -24,11 +24,21 @@ export class AuthService {
 
   login(credentials) {
     return this.http.post<User>(`jwt-auth/v1/token`, credentials)
-    .pipe(
-      tap((wpUser: User) => {
-        this.userSub.next(wpUser);
-        localStorage.setItem('wpUser', JSON.stringify(wpUser));
-      })
-    );
+      .pipe(
+        tap((wpUser: User) => {
+          this.userSub.next(wpUser);
+          localStorage.setItem('wpUser', JSON.stringify(wpUser));
+        })
+      );
   }
+
+  logout() {
+    this.userSub.next(null);
+    localStorage.removeItem('wpUser');
+  }
+
+  isLoggedIn() {
+    return this.user$;
+  }
+
 }
