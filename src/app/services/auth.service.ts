@@ -3,22 +3,29 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-import { LoginForm } from '../interfaces/login-form.interface';
 import { User } from '../interfaces/user.interfaces';
+import { UserProfile } from '../interfaces/user-profile.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private userSub: BehaviorSubject<User>;
+  userSub: BehaviorSubject<User>;
   user$: Observable<User>;
+
+  userProfileSub: BehaviorSubject<UserProfile>;
+  userProfile$: Observable<UserProfile>;
 
   constructor(private http: HttpClient) {
 
-    const user = JSON.parse(localStorage.getItem('user') || null);
+    const user = JSON.parse(localStorage.getItem('wpUser') || null);
     this.userSub = new BehaviorSubject(user);
     this.user$ = this.userSub.asObservable();
+
+    this.userProfileSub = new BehaviorSubject(null);
+    this.userProfile$ = this.userProfileSub.asObservable();
+
 
   }
 
@@ -32,8 +39,13 @@ export class AuthService {
       );
   }
 
+  getUserProfile(id: number) {
+    return this.http.get<UserProfile>(`wp/v2/users/${id}`);
+  }
+
   logout() {
     this.userSub.next(null);
+    this.userProfileSub.next(null);
     localStorage.removeItem('wpUser');
   }
 

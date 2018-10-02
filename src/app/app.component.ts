@@ -1,19 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { filter, switchMap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { Subscription } from '../../node_modules/rxjs';
 
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AuthService } from './services/auth.service';
+import { UserProfile } from './interfaces/user-profile.interface';
 
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
   public appPagesLogin = [
     {
       title: 'Home',
@@ -40,6 +43,8 @@ export class AppComponent {
     }
   ];
 
+  private subs: Subscription[] = [];
+  userprofile: UserProfile;
   isLoggedIn = false;
 
   constructor(
@@ -52,9 +57,13 @@ export class AppComponent {
     this.initializeApp();
     this.authService
         .isLoggedIn()
-        .pipe( filter(wpUser => wpUser !== null) )
+        .pipe(
+          filter(wpUser => wpUser !== null),
+          switchMap(wpUser => this.authService.getUserProfile(wpUser.user_id))
+        )
         .subscribe(res => {
               this.isLoggedIn = true;
+              this.authService.userProfileSub.next(res);
         });
 
     this.authService
@@ -72,7 +81,19 @@ export class AppComponent {
     });
   }
 
-  openPage(menu, page) {
+  ngOnInit() {
+    this.subs.push(
+      this.authService.userProfile$.subscribe( userprofile => {
+        this.userprofile = userprofile;
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.subs.forEach(sub => sub.unsubscribe);
+  }
+
+  openPage(page) {
     if (page === 'Logout') {
       this.authService.logout();
     }
